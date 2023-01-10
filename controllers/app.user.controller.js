@@ -1,4 +1,5 @@
 const Student = require("../models/student");
+const FormRecord = require("../models/formRecord");
 const Form = require("../models/form");
 const StudentVerification = require("../models/studentVerification");
 const bcrypt = require("bcrypt");
@@ -29,21 +30,6 @@ transporter.verify((error, success) => {
     console.log("Lets go babbyy");
   }
 });
-
-// const msg = {
-//   from: process.env.GMAIL_MAIL,
-//   to: "21bma016@nith.ac.in",
-//   subject: "Asrani ka NUNU",
-//   text: "Asrani ka NUNU!!!",
-// };
-
-// module.exports.checkMail = transporter.sendMail(msg, (err) => {
-//   if (err) {
-//     console.log(err);
-//   } else {
-//     console.log("mail sent");
-//   }
-// });
 
 //send verification email
 
@@ -236,8 +222,8 @@ exports.postForm = async (req, res, next) => {
     req.body;
   userId = req.params;
   const id = userId.id;
-  console.log(userId);
-  console.log(id);
+  // console.log(userId);
+  // console.log(id);
 
   // const regex = new RegExp(escapeRegex(req.body.roll), "gi");
   // console.log(first);
@@ -254,10 +240,21 @@ exports.postForm = async (req, res, next) => {
 
   const student = await Student.findById(id);
   await form.save().then(async (result) => {
-    console.log(result);
+    // console.log("no result");
     if (student.form === undefined) {
       student.form = form._id;
-
+      const formRecord = new FormRecord({
+        Name: Name,
+        roll: roll,
+        Department: Department,
+        RoomNum: RoomNum,
+        phone: phone,
+        address: address,
+        description: description,
+        student: id,
+      });
+      await formRecord.save();
+      console.log(formRecord);
       await student
         .save()
         .then(async (result) => {
@@ -577,4 +574,29 @@ exports.mmcaDenyButton = async (req, res, next) => {
     .catch((err) => {
       console.log(err);
     });
+};
+
+exports.formRecordDataStudent = async (req, res, next) => {
+  userId = req.params;
+
+  const id = userId.userId;
+
+  const formData = await FormRecord.find({ student: id });
+
+  res.status(201).json({
+    type: "success",
+    message: "formRecord recieved",
+    data: formData,
+  });
+};
+
+exports.formRecordData = async (req, res, next) => {
+  console.log("ceh");
+  const formData = await FormRecord.find({});
+
+  res.status(201).json({
+    type: "success",
+    message: "formRecord recieved",
+    data: formData,
+  });
 };

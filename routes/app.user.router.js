@@ -27,6 +27,8 @@ router.get(
   },
   appUserController.verifyEmail
 );
+router.get("/formData/show", appUserController.formRecordData);
+router.get("/formData/show/:userId", appUserController.formRecordDataStudent);
 router.post("/form/mmca/deny/:formId", appUserController.mmcaDeny);
 router.post("/form/mmca/:formId", appUserController.mmcaVerify);
 router.post("/form/deny/:formId", appUserController.mmcaDenyButton);
