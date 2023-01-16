@@ -47,9 +47,9 @@ const sendVerificationEmail = ({ _id, roll }, res) => {
   const mailOptions = {
     from: process.env.GMAIL_MAIL,
     to: roll,
-    subject: "Verify your email",
+    subject: "Verify your Student Mail for logging into NITH Portal App",
     html: `
-Verify your email address to complete the signup and login into your account.<p>This link link <b>expires in 6 hours</b>.</p><p>Press <a href=${
+Greetings Student! Please verify your email address to complete your login into NITH-PORTAL.<p><b>This link will expire in 6 hours</b>.</p><p>Click <a href=${
       currentUrl + "api/v1/verify/" + _id + "/" + uniqueString
     }> here </a> to proceed.</p>`,
   };
@@ -228,21 +228,25 @@ exports.postForm = async (req, res, next) => {
   // const regex = new RegExp(escapeRegex(req.body.roll), "gi");
   // console.log(first);
 
-  // const form = new Form({
-  //   Name: Name,
-  //   roll: roll,
-  //   Department: Department,
-  //   RoomNum: RoomNum,
-  //   phone: phone,
-  //   address: address,
-  //   description: description,
-  // });
-
   const student = await Student.findById(id).then(async (result) => {
     // console.log("no result");
-    if (student.form === undefined) {
-      console.log(student.form);
+    if (result.form === undefined) {
+      console.log(result.form);
+
+      const form = new Form({
+        Name: Name,
+        roll: roll,
+        Department: Department,
+        RoomNum: RoomNum,
+        phone: phone,
+        address: address,
+        description: description,
+      });
+      await form.save();
+      console.log(form);
+      const student = await Student.findById(id);
       student.form = form._id;
+      console.log(student);
       const formRecord = new FormRecord({
         Name: Name,
         roll: roll,
@@ -253,6 +257,7 @@ exports.postForm = async (req, res, next) => {
         description: description,
         student: id,
       });
+
       await formRecord.save();
       console.log(formRecord);
       await student
