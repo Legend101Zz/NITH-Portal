@@ -228,20 +228,20 @@ exports.postForm = async (req, res, next) => {
   // const regex = new RegExp(escapeRegex(req.body.roll), "gi");
   // console.log(first);
 
-  const form = new Form({
-    Name: Name,
-    roll: roll,
-    Department: Department,
-    RoomNum: RoomNum,
-    phone: phone,
-    address: address,
-    description: description,
-  });
+  // const form = new Form({
+  //   Name: Name,
+  //   roll: roll,
+  //   Department: Department,
+  //   RoomNum: RoomNum,
+  //   phone: phone,
+  //   address: address,
+  //   description: description,
+  // });
 
-  const student = await Student.findById(id);
-  await form.save().then(async (result) => {
+  const student = await Student.findById(id).then(async (result) => {
     // console.log("no result");
     if (student.form === undefined) {
+      console.log(student.form);
       student.form = form._id;
       const formRecord = new FormRecord({
         Name: Name,
@@ -469,7 +469,7 @@ exports.guardVerifyReturn = async (req, res, next) => {
   console.log(formId);
   console.log(id);
   const form = await Form.findById(id);
-  console.log(form.student);
+  console.log(form);
   studentId = form.student;
   const student = await Student.findOneAndUpdate(
     { _id: studentId },
