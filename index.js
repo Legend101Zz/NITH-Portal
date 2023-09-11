@@ -59,7 +59,7 @@ app.use((err, req, res, next) => {
 
 mongoose
   .connect(
-    `mongodb+srv://Mrigesh_Thakur:ftmZFK4URstWGGgK@cluster0.wsogi.mongodb.net/student?retryWrites=true&w=majority`
+process.env.MONGO_URI
   )
   .then((result) => {
     console.log("Database Connected!!");
